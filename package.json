@@ -5,7 +5,7 @@
     "deploy": "brunch build --production",
     "watch": "brunch watch --stdin",
     "elm-make": "elm-make --yes web/static/elm/Main.elm --output priv/static/js/elm.js",
-    "elm-watch": "nodemon -w web/static/elm/* -q --exec \"npm run -s elm-make\""
+    "elm-watch": "nodemon -q -e elm -w web/static/elm -x \"npm run -s elm-make\""
   },
   "dependencies": {
     "phoenix": "file:deps/phoenix",

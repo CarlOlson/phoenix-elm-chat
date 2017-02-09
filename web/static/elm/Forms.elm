@@ -1,13 +1,13 @@
 module Forms exposing (..)
 
-import Http
+import Http exposing (encodeUri)
 import Json.Decode as Json
-import Task
+import Task exposing (Task)
 
-postForm : String -> Http.Body -> Task
+-- postForm : msg -> String -> String -> Task
 postForm msg url body =
     Http.send msg
-        <| Http.post url body
+        <| Http.post url (formRequest body)
         <| Json.succeed 0
 
 formRequest : String -> Http.Body

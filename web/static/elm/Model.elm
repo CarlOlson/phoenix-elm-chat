@@ -1,7 +1,11 @@
-module Model exposing (..)
+module Model exposing (Key(..), Model, init, put, get, withDefault, try)
 
 import Dict exposing (Dict)
 import Material
+
+type Key
+    = Username
+    | Password
 
 type alias Model =
     { mdl : Material.Model
@@ -11,16 +15,30 @@ type alias Model =
 init =
     Model Material.model Dict.empty
 
-put : String -> String -> Model -> Model
+keyString : Key -> String
+keyString key =
+    case key of
+        Username -> "username"
+        Password -> "password"
+
+put : Key -> String -> Model -> Model
 put key value model =
     { model |
-      store = Dict.insert key value model.store
+      store = Dict.insert (keyString key) value model.store
     }
 
-get : String -> Model -> Maybe String
+get : Key -> Model -> Maybe String
 get key model =
-    Dict.get key model.store
+    Dict.get (keyString key) model.store
 
-withDefault : String -> String -> Model -> String
-withDefault key default model =
+withDefault : String -> Key -> Model -> String
+withDefault default key model =
     Maybe.withDefault default <| get key model
+
+try : (String -> v) -> v -> Key -> Model -> v
+try fn default key model =
+    case get key model of
+        Just value ->
+            fn value
+        Nothing ->
+            default

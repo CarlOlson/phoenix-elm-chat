@@ -20,6 +20,4 @@
 
 // import socket from "./socket"
 
-const Elm = require('./elm');
-
 Elm.Main.embed(document.getElementById('app'));

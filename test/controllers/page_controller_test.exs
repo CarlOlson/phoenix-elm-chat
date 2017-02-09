@@ -3,6 +3,11 @@ defmodule Chat.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get conn, "/"
-    assert html_response(conn, 200) =~ "Welcome to Phoenix!"
+
+    text =
+      html_response(conn, 200)
+      |> Floki.parse()
+      |> Floki.text
+    assert text =~ "Welcome to Phoenix!"
   end
 end

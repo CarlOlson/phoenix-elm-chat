@@ -3,7 +3,9 @@
   "license": "MIT",
   "scripts": {
     "deploy": "brunch build --production",
-    "watch": "brunch watch --stdin"
+    "watch": "brunch watch --stdin",
+    "elm-make": "elm-make --yes web/static/elm/Main.elm --output priv/static/js/elm.js",
+    "elm-watch": "nodemon -w web/static/elm/* -q --exec \"npm run -s elm-make\""
   },
   "dependencies": {
     "phoenix": "file:deps/phoenix",
@@ -16,6 +18,7 @@
     "css-brunch": "~2.0.0",
     "elm": "^0.18.0",
     "javascript-brunch": "~2.0.0",
+    "nodemon": "^1.11.0",
     "uglify-js-brunch": "~2.0.1"
   }
 }

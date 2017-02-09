@@ -41,7 +41,10 @@ exports.config = {
   paths: {
     // Dependencies and current project directories to watch
     watched: [
-      "web/static",
+      "web/static/assets",
+      "web/static/vendor",
+      "web/static/css",
+      "web/static/js",
       "test/static"
     ],
 

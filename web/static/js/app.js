@@ -32,10 +32,7 @@ app.ports.connect.subscribe((username) => {
     channel = socket.channel("chat:lobby", { username });
     channel.join();
 
-    channel.on("shout", payload => {
-        app.ports.receive.send(payload);
-        console.log(payload);
-    });
+    channel.on("shout", app.ports.receive.send);
 });
 
 app.ports.shout.subscribe(message =>

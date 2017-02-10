@@ -1,6 +1,9 @@
 module Model exposing (Key(..), State(..), ChatMessage, Model, init, put, get, withDefault, try)
 
 import Dict exposing (Dict)
+
+import Animation
+
 import Material
 
 type Key
@@ -21,7 +24,7 @@ type alias Model =
     { mdl : Material.Model
     , store : Dict String String
     , state : State
-    , messages : List ChatMessage
+    , messages : List (ChatMessage, Animation.State)
     }
 
 init =

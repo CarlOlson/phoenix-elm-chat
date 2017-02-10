@@ -9,6 +9,8 @@ import Html.Events exposing (..)
 
 import Json.Decode as Json
 
+import Animation exposing (turn, percent, px)
+
 import Material
 import Material.Scheme
 import Material.Button as Button
@@ -51,14 +53,35 @@ chatView model =
 
 messagesView model =
     let
-        messageView message =
-            Options.div [] [ text message.message ]
+        messageView model zindex =
+            case model of
+                (message, style) ->
+                    div ( Animation.render style
+                              ++ [ Html.Attributes.style
+                                       [ ("padding", "0em 0em 0em 0em")
+                                       , ("z-index", toString zindex)
+                                       , ("position", "relative")
+                                       ]
+                         ]
+                        )
+                    [ div [ Html.Attributes.style
+                                [ ("width" , "40em")
+                                , ("height" , "auto")
+                                , ("padding" , "0em 0em 0em 1em")
+                                , ("backgroundColor" , "black")
+                                , ("color", "white")
+                                ]
+                          ]
+                          [ p [ Html.Attributes.style [("height", "inherit")]
+                              ] [ text message.message ]
+                          ]
+                    ]
         rec messages acc =
             case messages of
                 [] ->
                     acc
                 message :: rest ->
-                    rec rest (messageView message :: acc)
+                    rec rest (messageView message (-1 * (List.length acc)) :: acc)
     in
         Options.div [] <| rec model.messages []
 

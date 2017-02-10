@@ -35,20 +35,26 @@ view model =
         |> (Material.Scheme.topWithScheme Color.Teal Color.Red)
 
 mainView model =
-    Options.div [ Options.center
-                , css "padding-top" "8%" ]
         (case model.state of
-             Login -> [ loginView model ]
-             Chat -> [ chatView model ])
+             Login ->
+                 Options.div [ Options.center
+                             , css "padding-top" "8%" ]
+                     [ loginView model ]
+             Chat ->
+                 chatView model)
 
 chatView model =
-    Options.div []
-        [ text (withDefault "" Username model)
-        , messagesView model
+    div [ style [ ("height", "100vh")
+                , ("padding", "1em 1em 1em 1em")
+                , ("display", "table") -- container
+                ] ]
+        [ div [ style [ ("display", "table-row")
+                      , ("height", "100%") -- expander
+                      ] ] [ messagesView model ]
         , textfield Message 2 model
             [ Textfield.label "Chat now..."
-            , onEnter (Submit FMessage) ]
-            []
+            , onEnter (Submit FMessage)
+            ] []
         ]
 
 messagesView model =
@@ -65,15 +71,17 @@ messagesView model =
                          ]
                         )
                     [ div [ Html.Attributes.style
-                                [ ("width" , "40em")
+                                [ ("width" , "100%")
                                 , ("height" , "auto")
                                 , ("padding" , "0em 0em 0em 1em")
                                 , ("backgroundColor" , "black")
                                 , ("color", "white")
                                 ]
                           ]
-                          [ p [ Html.Attributes.style [("height", "inherit")]
-                              ] [ text message.message ]
+                          [ p [ Html.Attributes.style [ ("height", "inherit") ] ]
+                                [ text (message.username ++ ": ") ]
+                          , p [ Html.Attributes.style [ ("height", "inherit") ] ]
+                                [ text message.message ]
                           ]
                     ]
         rec messages acc =
@@ -83,7 +91,12 @@ messagesView model =
                 message :: rest ->
                     rec rest (messageView message (-1 * (List.length acc)) :: acc)
     in
-        Options.div [] <| rec model.messages []
+        div [ style [ ("overflow-y", "scroll") -- scroller
+                             , ("height", "100%")
+                             ]
+                     , id "messages"
+                     ]
+            (rec model.messages [])
 
 loginView model =
     Options.div [ Elevation.e2

@@ -4,8 +4,9 @@ import Model exposing (..)
 import Forms exposing (..)
 
 import Animation exposing (percent, px)
-
+import Dom.Scroll exposing (..)
 import Material
+import Task
 
 type Form
     = FLogin
@@ -46,7 +47,7 @@ update msg model =
         Receive message ->
             { model
                 | messages = (message, initMessageStyle) :: model.messages
-            } ! []
+            } ! [ Task.attempt (always NoOp) <| toBottom "messages" ]
 
 handleForm : Model -> Form -> (Model, Cmd Msg)
 handleForm model form =

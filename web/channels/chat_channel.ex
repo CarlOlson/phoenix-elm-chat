@@ -1,29 +1,21 @@
 defmodule Chat.ChatChannel do
   use Chat.Web, :channel
 
-  def join("chat:lobby", payload, socket) do
-    if authorized?(payload) do
-      {:ok, socket}
-    else
-      {:error, %{reason: "unauthorized"}}
-    end
+  def join("chat:lobby", %{ "username" => username }, socket) do
+    socket = assign socket, :username, username
+    send(self(), :connect)
+    {:ok, socket}
   end
 
-  # Channels can be used in a request/response fashion
-  # by sending replies to requests from the client
-  def handle_in("ping", payload, socket) do
-    {:reply, {:ok, payload}, socket}
-  end
-
-  # It is also common to receive messages from the client and
-  # broadcast to everyone in the current topic (chat:lobby).
-  def handle_in("shout", payload, socket) do
-    broadcast socket, "shout", payload
+  def handle_in("shout", %{ "message" => message }, socket) do
+    broadcast socket, "shout", %{ "username" => socket.assigns.username,
+                                  "message" => message }
+    IO.puts message
     {:noreply, socket}
   end
 
-  # Add authorization logic here as required.
-  defp authorized?(_payload) do
-    true
+  def handle_info(:connect, socket) do
+    broadcast socket, "connect", %{ "username" => socket.assigns.username }
+    {:noreply, socket}
   end
 end

@@ -5,6 +5,9 @@ import Update exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
+
+import Json.Decode as Json
 
 import Material
 import Material.Scheme
@@ -37,7 +40,27 @@ mainView model =
              Chat -> [ chatView model ])
 
 chatView model =
-    Options.div [] [ text (withDefault "" Username model) ]
+    Options.div []
+        [ text (withDefault "" Username model)
+        , messagesView model
+        , textfield Message 2 model
+            [ Textfield.label "Chat now..."
+            , onEnter (Submit FMessage) ]
+            []
+        ]
+
+messagesView model =
+    let
+        messageView message =
+            Options.div [] [ text message.message ]
+        rec messages acc =
+            case messages of
+                [] ->
+                    acc
+                message :: rest ->
+                    rec rest (messageView message :: acc)
+    in
+        Options.div [] <| rec model.messages []
 
 loginView model =
     Options.div [ Elevation.e2
@@ -83,3 +106,14 @@ freeDiv attrs body =
                           , css "padding" "0% 8% 0% 8%"
                           ])
         body
+
+onEnter : Msg -> Options.Property c Msg
+onEnter msg =
+    let
+        isEnter code =
+            if code == 13 then
+                msg
+            else
+                NoOp
+    in
+        Options.on "keydown" (Json.map isEnter keyCode)

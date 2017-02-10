@@ -20,4 +20,23 @@
 
 // import socket from "./socket"
 
-Elm.Main.embed(document.getElementById('app'));
+import {Socket} from 'phoenix'
+
+const app = Elm.Main.embed(document.getElementById('app'));
+const socket = new Socket('/socket', {});
+let channel;
+
+socket.connect();
+
+app.ports.connect.subscribe((username) => {
+    channel = socket.channel("chat:lobby", { username });
+    channel.join();
+
+    channel.on("shout", payload => {
+        app.ports.receive.send(payload);
+        console.log(payload);
+    });
+});
+
+app.ports.shout.subscribe(message =>
+    channel.push("shout", { message }));

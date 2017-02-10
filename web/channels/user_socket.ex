@@ -33,5 +33,5 @@ defmodule Chat.UserSocket do
   #     Chat.Endpoint.broadcast("users_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(socket), do: "user:#{socket.assigns.username}"
+  def id(_socket), do: nil # "user:#{socket.assigns.username}"
 end

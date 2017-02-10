@@ -1,4 +1,4 @@
-module Model exposing (Key(..), State(..), Model, init, put, get, withDefault, try)
+module Model exposing (Key(..), State(..), ChatMessage, Model, init, put, get, withDefault, try)
 
 import Dict exposing (Dict)
 import Material
@@ -6,25 +6,33 @@ import Material
 type Key
     = Username
     | Password
+    | Message
 
 type State
     = Login
     | Chat
 
+type alias ChatMessage =
+    { username : String
+    , message : String
+    }
+
 type alias Model =
     { mdl : Material.Model
     , store : Dict String String
     , state : State
+    , messages : List ChatMessage
     }
 
 init =
-    Model Material.model Dict.empty Login
+    Model Material.model Dict.empty Login []
 
 keyString : Key -> String
 keyString key =
     case key of
         Username -> "username"
         Password -> "password"
+        Message -> "message"
 
 put : Key -> String -> Model -> Model
 put key value model =

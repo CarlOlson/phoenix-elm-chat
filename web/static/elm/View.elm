@@ -10,6 +10,7 @@ import Material
 import Material.Scheme
 import Material.Button as Button
 import Material.Color as Color
+import Material.Dialog as Dialog
 import Material.Elevation as Elevation
 import Material.Layout as Layout
 import Material.Options as Options exposing (css)
@@ -31,7 +32,12 @@ view model =
 mainView model =
     Options.div [ Options.center
                 , css "padding-top" "8%" ]
-        [ loginView model ]
+        (case model.state of
+             Login -> [ loginView model ]
+             Chat -> [ chatView model ])
+
+chatView model =
+    Options.div [] [ text (withDefault "" Username model) ]
 
 loginView model =
     Options.div [ Elevation.e2
@@ -40,24 +46,24 @@ loginView model =
               [ Typo.center
               , Typo.headline
               , css "padding-top" "8%" ]
-              [ text "Login / Register" ]
+              [ text "Login" ]
         , textfield Username 0 model
             [ Textfield.label "Username"
             ] []
-        , textfield Password 1 model
-            [ Textfield.label "Password"
-            , Textfield.password
-            , Textfield.error ("Password too short")
-            |> Options.when (try (\pass -> String.length pass < min_pass_length)
-                                 False
-                                 Password
-                                 model)
-            ] []
+        -- , textfield Password 1 model
+        --     [ Textfield.label "Password"
+        --     , Textfield.password
+        --     , Textfield.error ("Password too short")
+        --     |> Options.when (try (\pass -> String.length pass < min_pass_length)
+        --                          False
+        --                          Password
+        --                          model)
+        --     ] []
         , freeDiv [ css "padding" "0% 8% 8% 8%" ]
             [ Button.render Mdl [2] model.mdl
                   [ Button.raised
                   , Button.ripple
-                  , Options.onClick Submit ]
+                  , Options.onClick (Submit FLogin) ]
                   [ text "Submit" ]
             ]
         ]

@@ -59,7 +59,11 @@ handleForm model form =
                           & "password" := withDefault "" Password model
                     ]
         FLogin ->
-            { model | state = Chat } ! [ connect (withDefault "" Username model) ]
+            case get Username model of
+                Just username ->
+                    { model | state = Chat } ! [ connect username ]
+                Nothing ->
+                    model ! []
         FMessage ->
             (put Message "" model) ! [ shout (withDefault "" Message model) ]
 

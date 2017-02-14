@@ -3,6 +3,8 @@ module View exposing (view)
 import Model exposing (..)
 import Update exposing (..)
 
+import Set
+
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -14,10 +16,12 @@ import Animation exposing (turn, percent, px)
 import Material
 import Material.Scheme
 import Material.Button as Button
+import Material.Chip as Chip
 import Material.Color as Color
 import Material.Dialog as Dialog
 import Material.Elevation as Elevation
 import Material.Layout as Layout
+import Material.List as Lists
 import Material.Options as Options exposing (css)
 import Material.Textfield as Textfield
 import Material.Typography as Typo
@@ -26,9 +30,9 @@ min_pass_length = 6
 
 view : Model -> Html.Html Msg
 view model =
-    Layout.render Mdl model.mdl []
+    Layout.render Mdl model.mdl [ Layout.fixedDrawer ]
         { header = []
-        , drawer = []
+        , drawer = [ usersView model ]
         , tabs = ([], [])
         , main = [mainView model]
         }
@@ -70,18 +74,16 @@ messagesView model =
                                        ]
                          ]
                         )
-                    [ div [ Html.Attributes.style
-                                [ ("width" , "100%")
-                                , ("height" , "auto")
-                                , ("padding" , "0em 0em 0em 1em")
-                                , ("backgroundColor" , "black")
-                                , ("color", "white")
-                                ]
-                          ]
+                    [ Options.div [ css "width"           "100%"
+                                  , css "height"          "auto"
+                                  , css "padding"         "0em 0em 0em 1em"
+                                  , css "backgroundColor" "black"
+                                  , css "color"           "white"
+                                  ]
                           [ p [ Html.Attributes.style [ ("height", "inherit") ] ]
-                                [ text (message.username ++ ": ") ]
-                          , p [ Html.Attributes.style [ ("height", "inherit") ] ]
-                                [ text message.message ]
+                                [ text (message.username ++ ":")
+                                , br [] []
+                                , text message.message ]
                           ]
                     ]
         rec messages acc =
@@ -153,3 +155,28 @@ onEnter msg =
                 NoOp
     in
         Options.on "keydown" (Json.map isEnter keyCode)
+
+usersView model =
+    let
+        userView username =
+            Lists.li [] [
+                 Lists.content [] [
+                      Chip.span []
+                          [ Chip.content []
+                                [ text username ]
+                          ]
+                     ]
+                ]
+    in
+        div [] [ Lists.ul []
+                     (List.map userView (uniq <| allUsers model.messages)) ]
+
+uniq list =
+    Set.toList (Set.fromList list)
+
+allUsers messages =
+    case messages of
+        [] ->
+            []
+        (message, style) :: rest ->
+            message.username :: (allUsers rest)

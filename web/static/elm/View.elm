@@ -1,4 +1,4 @@
-module View exposing (view)
+module View exposing (view, uniq)
 
 import Model exposing (..)
 import Update exposing (..)

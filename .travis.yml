@@ -20,3 +20,6 @@ cache:
   directories:
     - node_modules
     - deps
+    - _build
+    - elm-stuff
+    - web/static/elm/tests/elm-stuff

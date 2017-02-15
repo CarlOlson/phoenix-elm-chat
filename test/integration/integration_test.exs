@@ -5,6 +5,9 @@ defmodule Chat.IntegrationTest do
   use Chat.ChannelCase
   alias Chat.ChatChannel
 
+  @timeout 2000
+  @sleep_time 100
+
   # Start hound session and destroy when tests are run
   hound_session()
 
@@ -20,20 +23,26 @@ defmodule Chat.IntegrationTest do
     assert visible_page_text() =~ ~r/Chat now.../
   end
 
+  @tag timeout: @timeout
   test "should display sent messages" do
     login()
 
     send_message("carl", "hello")
-    find_element(:tag, "p")
+    wait_for(fn ->
+      visible_page_text() =~ ~r/hello/
+    end)
 
     assert visible_page_text() =~ ~r/hello/
   end
 
+  @tag timeout: @timeout
   test "should display users" do
     login()
 
     send_message("carl", "hello")
-    find_element(:tag, "span")
+    wait_for(fn ->
+      visible_page_text() =~ ~r/carl/
+    end)
 
     assert visible_page_text() =~ ~r/carl/
   end
@@ -53,5 +62,13 @@ defmodule Chat.IntegrationTest do
 
     find_element(:tag, "button")
     |> click()
+  end
+
+  def wait_for(func) do
+    :timer.sleep(@sleep_time)
+    case func.() do
+      true -> true
+      false -> wait_for(func)
+    end
   end
 end

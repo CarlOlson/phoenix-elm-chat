@@ -23,3 +23,6 @@ cache:
     - _build
     - elm-stuff
     - web/static/elm/tests/elm-stuff
+deploy:
+  provider: heroku
+  api-key: e3216652-61f5-4d94-9b30-c6008279c68a

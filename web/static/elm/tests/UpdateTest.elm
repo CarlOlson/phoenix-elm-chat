@@ -37,4 +37,11 @@ updateTest =
                                       (model, cmd) -> model
                 in
                     Expect.equal final_model.state Chat
+        , test "Receive should add a message to model" <|
+            \() ->
+                let
+                    final_model = case (update (Receive <| ChatMessage "" "") init) of
+                                      (model, cmd) -> model
+                in
+                    Expect.equal (List.length final_model.messages) 1
         ]

@@ -10,7 +10,7 @@ import Task
 
 type Form
     = FLogin
-    | FRegister
+    -- | FRegister
     | FMessage
 
 type Msg
@@ -52,12 +52,12 @@ update msg model =
 handleForm : Model -> Form -> (Model, Cmd Msg)
 handleForm model form =
     case form of
-        FRegister ->
-            -- TODO show to server verification
-            model ! [ postForm (\_ -> NoOp) "/users"
-                          <| "username" := withDefault "" Username model
-                          & "password" := withDefault "" Password model
-                    ]
+        -- FRegister ->
+        --     -- TODO show to server verification
+        --     model ! [ postForm (\_ -> NoOp) "/users"
+        --                   <| "username" := withDefault "" Username model
+        --                   & "password" := withDefault "" Password model
+        --             ]
         FLogin ->
             case get Username model of
                 Just username ->

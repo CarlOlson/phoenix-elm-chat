@@ -1,9 +1,8 @@
-module View exposing (view, uniq)
+module View exposing (view, usersView, loginView, messagesView, chatView)
 
 import Model exposing (..)
 import Update exposing (..)
-
-import Set
+import Helpers exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -169,14 +168,4 @@ usersView model =
                 ]
     in
         div [] [ Lists.ul []
-                     (List.map userView (uniq <| allUsers model.messages)) ]
-
-uniq list =
-    Set.toList (Set.fromList list)
-
-allUsers messages =
-    case messages of
-        [] ->
-            []
-        (message, style) :: rest ->
-            message.username :: (allUsers rest)
+                     (List.map userView (uniq <| allUsers model)) ]

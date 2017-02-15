@@ -17,6 +17,14 @@ config :chat, Chat.Endpoint,
   cache_static_manifest: "priv/static/manifest.json",
   secret_key_base: System.get_env("SECRET_KEY_BASE")
 
+config :chat, Chat.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: "postgres",
+  password: "postgres",
+  database: "chat",
+  hostname: "localhost",
+  pool: Ecto.Adapters.SQL.Sandbox
+
 # Do not print debug messages in production
 config :logger, level: :info
 

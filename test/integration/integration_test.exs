@@ -5,7 +5,7 @@ defmodule Chat.IntegrationTest do
   use Chat.ChannelCase
   alias Chat.ChatChannel
 
-  @moduletag timeout: 2000
+  @moduletag timeout: 10000
   @sleep_time 10
 
   # Start hound session and destroy when tests are run

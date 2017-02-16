@@ -1,1 +1,25 @@
 /* This file is for your main application css. */
+
+#messages {
+    overflow: scroll;
+    height: 100%;
+}
+
+#chat-container {
+    height: 100vh;
+    padding: 1em 1em 1em 1em;
+    display: table;
+}
+
+#chat-expander {
+    display: table-row;
+    height: 100%;
+}
+
+.message {
+    width: 100%;
+    height: auto;
+    padding: 0em 0em 0em 1em;
+    background-color: black;
+    color: white;
+}

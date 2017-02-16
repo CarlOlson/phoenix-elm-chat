@@ -1,0 +1,4 @@
+info "Building Phoenix static assets"
+npm run elm-make
+npm run deploy
+mix phoenix.digest

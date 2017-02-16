@@ -35,7 +35,6 @@ defmodule Chat.Web do
       import Ecto.Query
 
       import Chat.Router.Helpers
-      import Chat.Gettext
     end
   end
 
@@ -51,7 +50,6 @@ defmodule Chat.Web do
 
       import Chat.Router.Helpers
       import Chat.ErrorHelpers
-      import Chat.Gettext
     end
   end
 
@@ -68,7 +66,6 @@ defmodule Chat.Web do
       alias Chat.Repo
       import Ecto
       import Ecto.Query
-      import Chat.Gettext
     end
   end
 

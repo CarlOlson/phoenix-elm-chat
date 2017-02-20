@@ -23,7 +23,6 @@ defmodule Chat.IntegrationTest do
     assert visible_page_text() =~ ~r/Chat now.../
   end
 
-  @tag :skip
   test "should display sent messages" do
     login()
 
@@ -35,7 +34,6 @@ defmodule Chat.IntegrationTest do
     assert visible_page_text() =~ ~r/hello/
   end
 
-  @tag :skip
   test "should display users" do
     login()
 

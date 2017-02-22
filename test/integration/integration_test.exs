@@ -2,9 +2,6 @@ defmodule Chat.IntegrationTest do
   use ExUnit.Case
   use Hound.Helpers
 
-  use Chat.ChannelCase
-  alias Chat.ChatChannel
-
   @moduletag timeout: 10000
   @sleep_time 10
 
@@ -26,7 +23,7 @@ defmodule Chat.IntegrationTest do
   test "should display sent messages" do
     login()
 
-    send_message("carl", "hello")
+    send_message("hello")
     wait_for(fn ->
       visible_page_text() =~ ~r/hello/
     end)
@@ -37,18 +34,18 @@ defmodule Chat.IntegrationTest do
   test "should display users" do
     login()
 
-    send_message("carl", "hello")
+    send_message("hello")
     wait_for(fn ->
-      visible_page_text() =~ ~r/carl/
+      visible_page_text() =~ ~r/carl/i
     end)
 
-    assert visible_page_text() =~ ~r/carl/
+    assert visible_page_text() =~ ~r/carl/i
   end
 
   test "should be able to delete messages" do
     login()
 
-    send_message("carl", "hello")
+    send_message("hello")
     wait_for(fn ->
       case search_element(:class, "delete-me") do
         {:error, _} ->
@@ -64,11 +61,20 @@ defmodule Chat.IntegrationTest do
     refute visible_page_text() =~ ~r/hello/
   end
 
-  defp send_message(user, text) do
-    {:ok, _, socket} =
-      socket()
-      |> subscribe_and_join(ChatChannel, "chat:lobby", %{"username" => user})
-    push socket, "shout", %{"message" => text}
+  defp send_message(text) do
+    wait_for(fn ->
+      case search_element(:tag, "input") do
+        {:error, _} ->
+          false
+        {:ok, _} ->
+          true
+      end
+    end)
+
+    find_element(:tag, "input")
+    |> input_into_field(text)
+
+    send_keys(:enter)
   end
 
   defp login() do

@@ -20,6 +20,7 @@ defmodule Chat.IntegrationTest do
     assert visible_page_text() =~ ~r/Chat now.../
   end
 
+  @tag :not_travis
   test "should display sent messages" do
     login()
 
@@ -31,6 +32,7 @@ defmodule Chat.IntegrationTest do
     assert visible_page_text() =~ ~r/hello/
   end
 
+  @tag :not_travis
   test "should display users" do
     login()
 
@@ -42,6 +44,7 @@ defmodule Chat.IntegrationTest do
     assert visible_page_text() =~ ~r/carl/i
   end
 
+  @tag :not_travis
   test "should be able to delete messages" do
     login()
 

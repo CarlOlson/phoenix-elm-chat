@@ -1,6 +1,10 @@
 Application.ensure_all_started(:hound)
 
-ExUnit.configure(exclude: [skip: true])
+if System.get_env("TRAVIS") do
+  ExUnit.configure(exclude: [skip: true, not_travis: true])
+else
+  ExUnit.configure(exclude: [skip: true])
+end
 
 ExUnit.start()
 

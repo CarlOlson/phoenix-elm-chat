@@ -20,6 +20,7 @@ type Msg
     | Put Key String
     | Submit Form
     | Receive ChatMessage
+    | DeleteMessage String
 
 port connect : String -> Cmd msg
 port shout : String -> Cmd msg
@@ -48,6 +49,15 @@ update msg model =
             { model
                 | messages = (message, initMessageStyle) :: model.messages
             } ! [ Task.attempt (always NoOp) <| toBottom "messages" ]
+        DeleteMessage uuid ->
+            { model
+                | messages = List.filter (\m -> messageUUID m /= uuid) model.messages
+            }! []
+
+messageUUID : (ChatMessage, Animation.State) -> String
+messageUUID message =
+    case message of
+        (message, _) -> message.uuid
 
 handleForm : Model -> Form -> (Model, Cmd Msg)
 handleForm model form =

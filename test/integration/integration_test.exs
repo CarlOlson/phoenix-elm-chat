@@ -45,6 +45,25 @@ defmodule Chat.IntegrationTest do
     assert visible_page_text() =~ ~r/carl/
   end
 
+  test "should be able to delete messages" do
+    login()
+
+    send_message("carl", "hello")
+    wait_for(fn ->
+      case search_element(:class, "delete-me") do
+        {:error, _} ->
+          false
+        {:ok, _} ->
+          visible_page_text() =~ ~r/hello/
+      end
+    end)
+
+    find_element(:class, "delete-me")
+    |> click()
+
+    refute visible_page_text() =~ ~r/hello/
+  end
+
   defp send_message(user, text) do
     {:ok, _, socket} =
       socket()

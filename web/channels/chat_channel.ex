@@ -9,7 +9,8 @@ defmodule Chat.ChatChannel do
 
   def handle_in("shout", %{ "message" => message }, socket) do
     broadcast socket, "shout", %{ "username" => socket.assigns.username,
-                                  "message" => message }
+                                  "message" => message,
+                                  "uuid" => UUID.uuid4 }
     {:noreply, socket}
   end
 

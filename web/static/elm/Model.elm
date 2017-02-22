@@ -18,6 +18,7 @@ type State
 type alias ChatMessage =
     { username : String
     , message : String
+    , uuid : String
     }
 
 type alias Model =

@@ -71,6 +71,11 @@ messagesView model =
                                     , br [] []
                                     , text message.message ]
                               ]
+                        , div [ cs "delete-me"
+                              , Options.onClick (DeleteMessage message.uuid)
+                              ]
+                            [ text "DELETE"
+                            ]
                         ]
         rec messages acc =
             case messages of

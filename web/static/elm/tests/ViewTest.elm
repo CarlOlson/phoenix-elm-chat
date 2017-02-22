@@ -52,4 +52,9 @@ viewTest = describe "View"
                    (chatView init
                    |> Query.fromHtml
                    |> Query.has [ tag "input" ])
+           , test "messages should have a delete feature" <|
+               \() ->
+                   (messagesView mockModel
+                   |> Query.fromHtml
+                   |> Query.has [ tag "div", class "delete-me" ])
            ]

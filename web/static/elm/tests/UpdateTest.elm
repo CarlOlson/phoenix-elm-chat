@@ -40,8 +40,23 @@ updateTest =
         , test "Receive should add a message to model" <|
             \() ->
                 let
-                    final_model = case (update (Receive <| ChatMessage "" "") init) of
+                    final_model = case (update (Receive <| ChatMessage "" "" "") init) of
                                       (model, cmd) -> model
                 in
                     Expect.equal (List.length final_model.messages) 1
+        , test "DeleteMessage removes the specified message" <|
+            \() ->
+                let
+                    first_model = case (update (Receive <| ChatMessage "" "" "ID1") init) of
+                                      (model, cmd) -> model
+                    second_model = case (update (Receive <| ChatMessage "" "" "ID2") first_model) of
+                                       (model, cmd) -> model
+                    final_model = case (update (DeleteMessage "ID1") second_model) of
+                                      (model, cmd) -> model
+                in
+                    case final_model.messages of
+                        (message, _) :: [] ->
+                            Expect.equal message (ChatMessage "" "" "ID2")
+                        _ ->
+                            Expect.fail "Incorrect number of messages"
         ]

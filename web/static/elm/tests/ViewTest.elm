@@ -16,13 +16,14 @@ import Animation
 type alias MsgMock =
     { username : String
     , message : String
+    , uuid : String
     }
 
 type alias ModelMock =
     { messages : List (MsgMock, Animation.State)
     }
 
-mockModel = ModelMock [ (MsgMock "carl" "hello", Animation.style []) ]
+mockModel = ModelMock [ (MsgMock "carl" "hello" "ID1", Animation.style []) ]
 
 viewTest : Test
 viewTest = describe "View"

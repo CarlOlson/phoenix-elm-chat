@@ -50,6 +50,10 @@ defmodule Chat.IntegrationTest do
     wait_for_element(:class, "delete-me")
     |> click()
 
+    wait_for(fn ->
+      !(visible_page_text() =~ ~r/hello/)
+    end)
+
     refute visible_page_text() =~ ~r/hello/
   end
 
@@ -68,6 +72,10 @@ defmodule Chat.IntegrationTest do
 
     wait_for_element(:tag, "button")
     |> click()
+
+    wait_for(fn ->
+      !(visible_page_text() =~ ~r/Login/i)
+    end)
   end
 
   defp wait_for(func) do

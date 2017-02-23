@@ -38,9 +38,8 @@ defmodule Chat.IntegrationTest do
     login()
 
     send_message("hello")
-    wait_for_text(~r/hello/)
 
-    assert visible_page_text() =~ ~r/hello/
+    assert wait_for_text(~r/hello/)
   end
 
   @tag :not_travis
@@ -48,9 +47,8 @@ defmodule Chat.IntegrationTest do
     login()
 
     send_message("hello")
-    wait_for_text(~r/carl/i)
 
-    assert visible_page_text() =~ ~r/carl/i
+    assert wait_for_text(~r/carl/i)
   end
 
   @tag :not_travis
@@ -78,11 +76,8 @@ defmodule Chat.IntegrationTest do
 
     login()
 
-    wait_for_text(~r/hello/)
-    assert visible_page_text() =~ ~r/hello/
-
-    wait_for_text(~r/bob/)
-    assert visible_page_text() =~ ~r/bob/
+    assert wait_for_text(~r/hello/)
+    assert wait_for_text(~r/bob/)
   end
 
   defp send_message(text) do

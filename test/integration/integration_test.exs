@@ -103,11 +103,12 @@ defmodule Chat.IntegrationTest do
 
   defp wait_for(func) do
     result = func.()
-    unless result do
+    if result do
+      result
+    else
       :timer.sleep(@sleep_time)
       wait_for(func)
     end
-    result
   end
 
   defp wait_for_element(query_type, query) do

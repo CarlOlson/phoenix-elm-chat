@@ -63,12 +63,11 @@ defmodule Chat.IntegrationTest do
     wait_for_element(:class, "delete-me")
     |> click()
 
-    wait_for(fn ->
+    assert wait_for(fn ->
       !(visible_page_text() =~ ~r/hello/)
     end)
   end
 
-    refute visible_page_text() =~ ~r/hello/
   @tag :not_travis
   test "should remove deleted messages from the database" do
     login()

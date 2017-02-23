@@ -25,9 +25,7 @@ defmodule Chat.IntegrationTest do
     login()
 
     send_message("hello")
-    wait_for(fn ->
-      visible_page_text() =~ ~r/hello/
-    end)
+    wait_for_text(~r/hello/)
 
     assert visible_page_text() =~ ~r/hello/
   end
@@ -37,9 +35,7 @@ defmodule Chat.IntegrationTest do
     login()
 
     send_message("hello")
-    wait_for(fn ->
-      visible_page_text() =~ ~r/carl/i
-    end)
+    wait_for_text(~r/carl/i)
 
     assert visible_page_text() =~ ~r/carl/i
   end
@@ -49,32 +45,16 @@ defmodule Chat.IntegrationTest do
     login()
 
     send_message("hello")
-    wait_for(fn ->
-      case search_element(:class, "delete-me") do
-        {:error, _} ->
-          false
-        {:ok, _} ->
-          visible_page_text() =~ ~r/hello/
-      end
-    end)
+    wait_for_text(~r/hello/)
 
-    find_element(:class, "delete-me")
+    wait_for_element(:class, "delete-me")
     |> click()
 
     refute visible_page_text() =~ ~r/hello/
   end
 
   defp send_message(text) do
-    wait_for(fn ->
-      case search_element(:tag, "input") do
-        {:error, _} ->
-          false
-        {:ok, _} ->
-          true
-      end
-    end)
-
-    find_element(:tag, "input")
+    wait_for_element(:tag, "input")
     |> input_into_field(text)
 
     send_keys(:enter)
@@ -83,21 +63,34 @@ defmodule Chat.IntegrationTest do
   defp login() do
     navigate_to("/")
 
-    wait_for(fn ->
-      visible_page_text() =~ ~r/Login/
-    end)
+    wait_for_element(:tag, "input")
+    |> fill_field("Carl")
 
-    element = find_element(:tag, "input")
-    fill_field(element, "Carl")
-
-    find_element(:tag, "button")
+    wait_for_element(:tag, "button")
     |> click()
   end
 
-  def wait_for(func) do
-    unless func.() do
+  defp wait_for(func) do
+    result = func.()
+    unless result do
       :timer.sleep(@sleep_time)
       wait_for(func)
     end
+    result
+  end
+
+  defp wait_for_element(query_type, query) do
+    wait_for(fn ->
+      case search_element(query_type, query) do
+        {:error, _} -> false
+        {:ok, element} -> element
+      end
+    end)
+  end
+
+  defp wait_for_text(regex) do
+    wait_for(fn ->
+      visible_page_text() =~ regex
+    end)
   end
 end

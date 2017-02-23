@@ -60,33 +60,46 @@ messagesView model =
                 [] ->
                     acc
                 message :: rest ->
-                    rec rest (messageView message model.mdl (-1 * (List.length acc)) :: acc)
+                    rec rest (messageView model message (-1 * (List.length acc)) :: acc)
     in
         div [ id "messages" ]
             (rec model.messages [])
 
-messageView model mdl zindex =
-    case model of
-        (message, style) ->
-            Html.div ( Animation.render style
-                           ++ [ Html.Attributes.style
-                                    [ ("z-index", toString zindex) ]
-                              ]
-                     )
-                [ div [ cs "message" ]
-                      [ p []
-                            [ text (message.username ++ ":")
-                            , br [] []
-                            , text message.body ]
-                      , Button.render Mdl [0] mdl
-                          [ cs "delete-me"
-                          , Options.onClick (DeleteMessage message.uuid)
-                          , Button.icon
-                          , Button.accent
-                          ]
-                            [ Icon.i "remove" ]
-                      ]
+messageView model msg_model zindex =
+    let
+        message = case msg_model of
+                      (message, _) -> message
+
+        style = case msg_model of
+                    (_, style) -> style
+
+        own_message = (try (\username -> username == message.username)
+                           False
+                           Username
+                           model)
+
+        delete_button =
+            Button.render Mdl [0] model.mdl
+                [ cs "delete-me"
+                , Options.onClick (DeleteMessage message.uuid)
+                , Button.icon
+                , Button.accent
                 ]
+            [ Icon.i "remove" ]
+    in
+        Html.div (Animation.render style
+                      ++ [ Html.Attributes.style
+                               [ ("z-index", toString zindex) ]
+                         ])
+            [ div [ cs "message" ] <|
+                  [ p []
+                        [ text (message.username ++ ":")
+                        , br [] []
+                        , text message.body ]
+                  ] ++ if own_message
+                       then [delete_button]
+                       else []
+            ]
 
 loginView model =
     div [ Elevation.e2

@@ -14,12 +14,9 @@ import Model exposing (..)
 import Animation
 import Material
 
-type alias ModelMock =
-    { messages : List (ChatMessage, Animation.State)
-    , mdl : Material.Model
-    }
-
-mockModel = ModelMock [ (ChatMessage "carl" "hello" "ID1", Animation.style []) ] Material.model
+mockModel = put Username "carl" { init |
+                                      messages = [ (ChatMessage "carl" "hello" "ID1", Animation.style []) ]
+                                }
 
 viewTest : Test
 viewTest = describe "View"
@@ -53,5 +50,14 @@ viewTest = describe "View"
                \() ->
                    (messagesView mockModel
                    |> Query.fromHtml
-                   |> Query.has [ tag "div", class "delete-me" ])
+                   |> Query.has [ class "delete-me" ])
+           , test "delete is only shown on owned messages" <|
+               \() ->
+                   let
+                       model = put Username "bob" mockModel
+                   in
+                       (messagesView model
+                       |> Query.fromHtml
+                       |> Query.findAll [ class "delete-me" ]
+                       |> Query.count (Expect.equal 0))
            ]

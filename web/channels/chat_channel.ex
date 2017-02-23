@@ -30,6 +30,7 @@ defmodule Chat.ChatChannel do
 
     if (msg && msg.username == socket.assigns.username) do
       Repo.delete(msg)
+      broadcast socket, "delete", %{ "uuid" => uuid }
     end
 
     {:noreply, socket}

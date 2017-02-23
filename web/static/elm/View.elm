@@ -81,7 +81,7 @@ messageView model msg_model zindex =
         delete_button =
             Button.render Mdl [0] model.mdl
                 [ cs "delete-me"
-                , Options.onClick (DeleteMessage message.uuid)
+                , Options.onClick (Submit <| FDelete message.uuid)
                 , Button.icon
                 , Button.accent
                 ]

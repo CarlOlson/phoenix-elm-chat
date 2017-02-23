@@ -40,27 +40,27 @@ defmodule Chat.ChatChannelTest do
   end
 
   test "should be able to delete own comments", %{socket: socket} do
-    {:ok, message} =
-      %Message{}
-      |> Message.changeset(%{username: "carl", body: "hello"})
-      |> Repo.insert()
+    message = add_message("carl", "hello")
 
-    push socket, "delete", %{uuid: message.id}
+    push socket, "delete", %{"uuid" => message.id}
 
-    assert wait_for(fn ->
-      Repo.get(Message, message.id) == nil
-    end)
+    assert_broadcast "delete", %{"uuid" => _}
+    refute Repo.get(Message, message.id)
   end
 
   test "should not be able to delete other's comments", %{socket: socket} do
-    {:ok, message} =
-      %Message{}
-      |> Message.changeset(%{username: "bob", body: "hello"})
-      |> Repo.insert()
+    message = add_message("bob", "hello")
 
     push socket, "delete", %{uuid: message.id}
 
     :timer.sleep @sleep_time
     assert Repo.get(Message, message.id)
+  end
+
+  test "successful deletes should be broadcasted", %{socket: socket} do
+    message = add_message("carl", "hello")
+
+    push socket, "delete", %{uuid: message.id}
+    assert_broadcast "delete", %{}
   end
 end

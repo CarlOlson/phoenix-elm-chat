@@ -2,21 +2,12 @@ defmodule Chat.IntegrationTest do
   use ExUnit.Case
   use Chat.DefaultCase
   use Hound.Helpers
+  use Chat.ChannelCase
 
   import Ecto.Query
 
   alias Chat.Message
   alias Chat.Repo
-
-  setup tags do
-    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Chat.Repo)
-
-    unless tags[:async] do
-      Ecto.Adapters.SQL.Sandbox.mode(Chat.Repo, {:shared, self()})
-    end
-
-    :ok
-  end
 
   @moduletag timeout: (if System.get_env("TRAVIS"), do: 10_000, else: 1_000)
 
@@ -86,10 +77,25 @@ defmodule Chat.IntegrationTest do
   end
 
   @tag :not_travis
+  test "should respond to other's delete events" do
+    message = add_message("bob", "hello")
+
+    login()
+    wait_for_text(~r/hello/)
+
+    {:ok, _, socket} =
+      socket()
+      |> subscribe_and_join(Chat.ChatChannel, "chat:lobby", %{"username" => "bob"})
+    broadcast_from socket, "delete", %{ "uuid" => message.id }
+
+    assert wait_for(fn ->
+      !(visible_page_text() =~ ~r/hello/)
+    end)
+  end
+
+  @tag :not_travis
   test "should show previously sent messages" do
-    %Message{}
-    |> Message.changeset(%{username: "bob", body: "hello"})
-    |> Repo.insert!
+    add_message("bob", "hello")
 
     login()
 

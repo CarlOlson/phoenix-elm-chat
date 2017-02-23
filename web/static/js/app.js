@@ -32,7 +32,9 @@ app.ports.connect.subscribe((username) => {
     channel = socket.channel("chat:lobby", { username });
     channel.join();
 
-    channel.on("shout", app.ports.receive.send);
+    channel.on("shout", app.ports.receive_shout.send);
+    channel.on("delete", ({uuid}) =>
+        app.ports.receive_delete.send(uuid));
 });
 
 app.ports.shout.subscribe(body =>

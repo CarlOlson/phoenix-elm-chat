@@ -8,9 +8,12 @@ import Dom.Scroll exposing (..)
 import Material
 import Task
 
+type alias UUID = String
+
 type Form
     = FLogin
     | FMessage
+    | FDelete UUID
 
 type Msg
     = NoOp
@@ -24,7 +27,8 @@ type Msg
 port connect : String -> Cmd msg
 port shout : String -> Cmd msg
 port delete : String -> Cmd msg
-port receive : (ChatMessage -> msg) -> Sub msg
+port receive_delete : (String -> msg) -> Sub msg
+port receive_shout : (ChatMessage -> msg) -> Sub msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -52,7 +56,7 @@ update msg model =
         DeleteMessage uuid ->
             { model
                 | messages = List.filter (\m -> messageUUID m /= uuid) model.messages
-            }! [ delete uuid ]
+            }! []
 
 messageUUID : (ChatMessage, Animation.State) -> String
 messageUUID message =
@@ -70,13 +74,16 @@ handleForm model form =
                     model ! []
         FMessage ->
             (put Message "" model) ! [ shout (withDefault "" Message model) ]
+        FDelete uuid ->
+            model ! [ delete uuid ]
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
         [ Animation.subscription Animate
               <| List.map (\m -> case m of (m, s) -> s) model.messages
-        , receive Receive ]
+        , receive_shout Receive
+        , receive_delete DeleteMessage ]
 
 initMessageStyle : Animation.State
 initMessageStyle =

@@ -15,7 +15,7 @@ defmodule Chat.IntegrationTest do
     :ok
   end
 
-  @moduletag timeout: 10000
+  @moduletag timeout: (if System.get_env("TRAVIS"), do: 10_000, else: 1_000)
   @sleep_time 10
 
   # Start hound session and destroy when tests are run

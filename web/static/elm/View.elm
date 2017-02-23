@@ -25,8 +25,6 @@ import Material.Options as Options exposing (div, css, cs, id, center)
 import Material.Textfield as Textfield
 import Material.Typography as Typo
 
-min_pass_length = 6
-
 view : Model -> Html.Html Msg
 view model =
     Layout.render Mdl model.mdl [ Layout.fixedDrawer ]
@@ -57,26 +55,6 @@ chatView model =
 
 messagesView model =
     let
-        messageView model zindex =
-            case model of
-                (message, style) ->
-                    Html.div ( Animation.render style
-                                   ++ [ Html.Attributes.style
-                                            [ ("z-index", toString zindex) ]
-                                      ]
-                             )
-                        [ div [ cs "message" ]
-                              [ p []
-                                    [ text (message.username ++ ":")
-                                    , br [] []
-                                    , text message.message ]
-                              ]
-                        , div [ cs "delete-me"
-                              , Options.onClick (DeleteMessage message.uuid)
-                              ]
-                            [ text "DELETE"
-                            ]
-                        ]
         rec messages acc =
             case messages of
                 [] ->
@@ -86,6 +64,26 @@ messagesView model =
     in
         div [ id "messages" ]
             (rec model.messages [])
+
+messageView model zindex =
+    case model of
+        (message, style) ->
+            Html.div ( Animation.render style
+                           ++ [ Html.Attributes.style
+                                    [ ("z-index", toString zindex) ]
+                              ]
+                     )
+                [ div [ cs "message" ]
+                      [ p []
+                            [ text (message.username ++ ":")
+                            , br [] []
+                            , text message.message ]
+                      ]
+                , div [ cs "delete-me"
+                      , Options.onClick (DeleteMessage message.uuid)
+                      ]
+                      [ text "DELETE" ]
+                ]
 
 loginView model =
     div [ Elevation.e2
@@ -98,15 +96,6 @@ loginView model =
         , textfield Username 0 model
             [ Textfield.label "Username"
             ] []
-        -- , textfield Password 1 model
-        --     [ Textfield.label "Password"
-        --     , Textfield.password
-        --     , Textfield.error ("Password too short")
-        --     |> Options.when (try (\pass -> String.length pass < min_pass_length)
-        --                          False
-        --                          Password
-        --                          model)
-        --     ] []
         , div [ center
               , css "padding" "0% 8% 8% 8%" ]
               [ Button.render Mdl [2] model.mdl

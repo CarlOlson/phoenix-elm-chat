@@ -39,8 +39,7 @@ defmodule Chat.Mixfile do
      {:cowboy, "~> 1.0"},
      {:comeonin, "~> 3.0"},
      {:floki, "~> 0.14.0", only: :test},
-     {:hound, "~> 1.0", only: :test},
-     { :uuid, "~> 1.1" } ]
+     {:hound, "~> 1.0", only: :test}]
   end
 
   # Aliases are shortcuts or tasks specific to the current project.

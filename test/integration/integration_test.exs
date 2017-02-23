@@ -2,6 +2,16 @@ defmodule Chat.IntegrationTest do
   use ExUnit.Case
   use Hound.Helpers
 
+  setup tags do
+    :ok = Ecto.Adapters.SQL.Sandbox.checkout(Chat.Repo)
+
+    unless tags[:async] do
+      Ecto.Adapters.SQL.Sandbox.mode(Chat.Repo, {:shared, self()})
+    end
+
+    :ok
+  end
+
   @moduletag timeout: 10000
   @sleep_time 10
 

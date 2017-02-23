@@ -12,8 +12,8 @@ defmodule Chat.ChatChannelTest do
   end
 
   test "shout broadcasts to chat:lobby", %{socket: socket} do
-    push socket, "shout", %{"message" => "hello"}
-    assert_broadcast "shout", %{"message" => "hello"}
+    push socket, "shout", %{"body" => "hello"}
+    assert_broadcast "shout", %{"body" => "hello"}
   end
 
   test "broadcasts are pushed to the client", %{socket: socket} do
@@ -22,17 +22,17 @@ defmodule Chat.ChatChannelTest do
   end
 
   test "shouts should have a uuid", %{ socket: socket } do
-    push socket, "shout", %{"message" => "hello"}
+    push socket, "shout", %{"body" => "hello"}
 
     assert_broadcast "shout", %{"uuid" => _}
   end
 
   test "shouts should have different uuids", %{socket: socket} do
-    push socket, "shout", %{"message" => "1"}
-    push socket, "shout", %{"message" => "2"}
+    push socket, "shout", %{"body" => "1"}
+    push socket, "shout", %{"body" => "2"}
 
-    assert_broadcast "shout", %{"message" => "1", "uuid" => uuid1}
-    assert_broadcast "shout", %{"message" => "2", "uuid" => uuid2}
+    assert_broadcast "shout", %{"body" => "1", "uuid" => uuid1}
+    assert_broadcast "shout", %{"body" => "2", "uuid" => uuid2}
     assert uuid1 != uuid2
   end
 end

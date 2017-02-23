@@ -17,7 +17,7 @@ type State
 
 type alias ChatMessage =
     { username : String
-    , message : String
+    , body : String
     , uuid : String
     }
 

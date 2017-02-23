@@ -14,18 +14,12 @@ import Model exposing (..)
 import Animation
 import Material
 
-type alias MsgMock =
-    { username : String
-    , message : String
-    , uuid : String
-    }
-
 type alias ModelMock =
-    { messages : List (MsgMock, Animation.State)
+    { messages : List (ChatMessage, Animation.State)
     , mdl : Material.Model
     }
 
-mockModel = ModelMock [ (MsgMock "carl" "hello" "ID1", Animation.style []) ] Material.model
+mockModel = ModelMock [ (ChatMessage "carl" "hello" "ID1", Animation.style []) ] Material.model
 
 viewTest : Test
 viewTest = describe "View"

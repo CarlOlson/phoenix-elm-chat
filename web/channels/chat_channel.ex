@@ -10,7 +10,7 @@ defmodule Chat.ChatChannel do
     {:ok, socket}
   end
 
-  def handle_in("shout", %{ "message" => body }, socket) do
+  def handle_in("shout", %{ "body" => body }, socket) do
     message =
       %Message{}
       |> Message.changeset(%{
@@ -19,7 +19,7 @@ defmodule Chat.ChatChannel do
       |> Repo.insert!()
 
     broadcast socket, "shout", %{ "username" => socket.assigns.username,
-                                  "message" => body,
+                                  "body" => body,
                                   "uuid" => message.id }
 
     {:noreply, socket}
@@ -31,7 +31,7 @@ defmodule Chat.ChatChannel do
     Repo.all(Message)
     |> Enum.each(fn message ->
       push socket, "shout", %{ "username" => message.username,
-                               "message" => message.body,
+                               "body" => message.body,
                                "uuid" => message.id }
     end)
 

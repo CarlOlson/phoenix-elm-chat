@@ -77,7 +77,7 @@ messageView model mdl zindex =
                       [ p []
                             [ text (message.username ++ ":")
                             , br [] []
-                            , text message.message ]
+                            , text message.body ]
                       , Button.render Mdl [0] mdl
                           [ cs "delete-me"
                           , Options.onClick (DeleteMessage message.uuid)

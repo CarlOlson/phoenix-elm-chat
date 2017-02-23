@@ -35,5 +35,5 @@ app.ports.connect.subscribe((username) => {
     channel.on("shout", app.ports.receive.send);
 });
 
-app.ports.shout.subscribe(message =>
-    channel.push("shout", { message }));
+app.ports.shout.subscribe(body =>
+    channel.push("shout", { body }));

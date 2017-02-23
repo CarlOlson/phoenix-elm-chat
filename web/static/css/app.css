@@ -23,3 +23,9 @@
     background-color: black;
     color: white;
 }
+
+.message .delete-me {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+}

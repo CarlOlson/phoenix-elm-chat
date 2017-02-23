@@ -12,6 +12,7 @@ import Test.Html.Selector exposing (..)
 import View exposing (..)
 import Model exposing (..)
 import Animation
+import Material
 
 type alias MsgMock =
     { username : String
@@ -21,9 +22,10 @@ type alias MsgMock =
 
 type alias ModelMock =
     { messages : List (MsgMock, Animation.State)
+    , mdl : Material.Model
     }
 
-mockModel = ModelMock [ (MsgMock "carl" "hello" "ID1", Animation.style []) ]
+mockModel = ModelMock [ (MsgMock "carl" "hello" "ID1", Animation.style []) ] Material.model
 
 viewTest : Test
 viewTest = describe "View"

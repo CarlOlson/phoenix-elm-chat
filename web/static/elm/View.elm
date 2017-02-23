@@ -19,6 +19,7 @@ import Material.Chip as Chip
 import Material.Color as Color
 import Material.Dialog as Dialog
 import Material.Elevation as Elevation
+import Material.Icon as Icon
 import Material.Layout as Layout
 import Material.List as Lists
 import Material.Options as Options exposing (div, css, cs, id, center)
@@ -59,12 +60,12 @@ messagesView model =
                 [] ->
                     acc
                 message :: rest ->
-                    rec rest (messageView message (-1 * (List.length acc)) :: acc)
+                    rec rest (messageView message model.mdl (-1 * (List.length acc)) :: acc)
     in
         div [ id "messages" ]
             (rec model.messages [])
 
-messageView model zindex =
+messageView model mdl zindex =
     case model of
         (message, style) ->
             Html.div ( Animation.render style
@@ -77,11 +78,14 @@ messageView model zindex =
                             [ text (message.username ++ ":")
                             , br [] []
                             , text message.message ]
+                      , Button.render Mdl [0] mdl
+                          [ cs "delete-me"
+                          , Options.onClick (DeleteMessage message.uuid)
+                          , Button.icon
+                          , Button.accent
+                          ]
+                            [ Icon.i "remove" ]
                       ]
-                , div [ cs "delete-me"
-                      , Options.onClick (DeleteMessage message.uuid)
-                      ]
-                      [ text "DELETE" ]
                 ]
 
 loginView model =

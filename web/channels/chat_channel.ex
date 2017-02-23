@@ -2,6 +2,7 @@ defmodule Chat.ChatChannel do
   use Chat.Web, :channel
 
   alias Chat.Message
+  alias Chat.Repo
 
   def join("chat:lobby", %{ "username" => username }, socket) do
     socket = assign socket, :username, username
@@ -26,6 +27,14 @@ defmodule Chat.ChatChannel do
 
   def handle_info(:connect, socket) do
     broadcast socket, "connect", %{ "username" => socket.assigns.username }
+
+    Repo.all(Message)
+    |> Enum.each(fn message ->
+      push socket, "shout", %{ "username" => message.username,
+                               "message" => message.body,
+                               "uuid" => message.id }
+    end)
+
     {:noreply, socket}
   end
 end

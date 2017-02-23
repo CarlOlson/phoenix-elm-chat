@@ -2,6 +2,9 @@ defmodule Chat.IntegrationTest do
   use ExUnit.Case
   use Hound.Helpers
 
+  alias Chat.Message
+  alias Chat.Repo
+
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Chat.Repo)
 
@@ -65,6 +68,21 @@ defmodule Chat.IntegrationTest do
     end)
 
     refute visible_page_text() =~ ~r/hello/
+  end
+
+  @tag :not_travis
+  test "should show previously sent messages" do
+    %Message{}
+    |> Message.changeset(%{username: "bob", body: "hello"})
+    |> Repo.insert!
+
+    login()
+
+    wait_for_text(~r/hello/)
+    assert visible_page_text() =~ ~r/hello/
+
+    wait_for_text(~r/bob/)
+    assert visible_page_text() =~ ~r/bob/
   end
 
   defp send_message(text) do

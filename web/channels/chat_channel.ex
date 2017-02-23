@@ -25,6 +25,16 @@ defmodule Chat.ChatChannel do
     {:noreply, socket}
   end
 
+  def handle_in("delete", %{ "uuid" => uuid }, socket) do
+    msg = Repo.get(Message, uuid)
+
+    if msg do
+      Repo.delete(msg)
+    end
+
+    {:noreply, socket}
+  end
+
   def handle_info(:connect, socket) do
     broadcast socket, "connect", %{ "username" => socket.assigns.username }
 

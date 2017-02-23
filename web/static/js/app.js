@@ -37,3 +37,6 @@ app.ports.connect.subscribe((username) => {
 
 app.ports.shout.subscribe(body =>
     channel.push("shout", { body }));
+
+app.ports.delete.subscribe(uuid =>
+    channel.push("delete", { uuid }));

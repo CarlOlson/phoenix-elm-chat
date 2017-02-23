@@ -2,6 +2,8 @@ defmodule Chat.IntegrationTest do
   use ExUnit.Case
   use Hound.Helpers
 
+  import Ecto.Query
+
   alias Chat.Message
   alias Chat.Repo
 
@@ -64,8 +66,24 @@ defmodule Chat.IntegrationTest do
     wait_for(fn ->
       !(visible_page_text() =~ ~r/hello/)
     end)
+  end
 
     refute visible_page_text() =~ ~r/hello/
+  @tag :not_travis
+  test "should remove deleted messages from the database" do
+    login()
+
+    send_message("hello")
+    wait_for_text(~r/hello/)
+
+    id = Repo.one from msg in Message, select: msg.id
+
+    wait_for_element(:class, "delete-me")
+    |> click()
+
+    assert wait_for(fn ->
+      Repo.get(Message, id) == nil
+    end)
   end
 
   @tag :not_travis

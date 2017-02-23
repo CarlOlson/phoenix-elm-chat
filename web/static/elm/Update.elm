@@ -24,6 +24,7 @@ type Msg
 
 port connect : String -> Cmd msg
 port shout : String -> Cmd msg
+port delete : String -> Cmd msg
 port receive : (ChatMessage -> msg) -> Sub msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -52,7 +53,7 @@ update msg model =
         DeleteMessage uuid ->
             { model
                 | messages = List.filter (\m -> messageUUID m /= uuid) model.messages
-            }! []
+            }! [ delete uuid ]
 
 messageUUID : (ChatMessage, Animation.State) -> String
 messageUUID message =

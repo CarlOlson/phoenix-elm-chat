@@ -1,5 +1,6 @@
 defmodule Chat.IntegrationTest do
   use ExUnit.Case
+  use Chat.DefaultCase
   use Hound.Helpers
 
   import Ecto.Query
@@ -18,7 +19,6 @@ defmodule Chat.IntegrationTest do
   end
 
   @moduletag timeout: (if System.get_env("TRAVIS"), do: 10_000, else: 1_000)
-  @sleep_time 10
 
   # Start hound session and destroy when tests are run
   hound_session()
@@ -116,16 +116,6 @@ defmodule Chat.IntegrationTest do
     wait_for(fn ->
       !(visible_page_text() =~ ~r/Login/i)
     end)
-  end
-
-  defp wait_for(func) do
-    result = func.()
-    if result do
-      result
-    else
-      :timer.sleep(@sleep_time)
-      wait_for(func)
-    end
   end
 
   defp wait_for_element(query_type, query) do

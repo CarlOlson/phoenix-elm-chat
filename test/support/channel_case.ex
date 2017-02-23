@@ -25,6 +25,7 @@ defmodule Chat.ChannelCase do
       import Ecto.Changeset
       import Ecto.Query
 
+      import Chat.DefaultCase
 
       # The default endpoint for testing
       @endpoint Chat.Endpoint

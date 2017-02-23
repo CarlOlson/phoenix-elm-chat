@@ -22,6 +22,7 @@ defmodule Chat.ModelCase do
       import Ecto.Changeset
       import Ecto.Query
       import Chat.ModelCase
+      import Chat.DefaultCase
     end
   end
 

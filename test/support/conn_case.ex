@@ -27,6 +27,8 @@ defmodule Chat.ConnCase do
 
       import Chat.Router.Helpers
 
+      import Chat.DefaultCase
+
       # The default endpoint for testing
       @endpoint Chat.Endpoint
     end

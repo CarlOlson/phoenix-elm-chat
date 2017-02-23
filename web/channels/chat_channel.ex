@@ -28,7 +28,7 @@ defmodule Chat.ChatChannel do
   def handle_in("delete", %{ "uuid" => uuid }, socket) do
     msg = Repo.get(Message, uuid)
 
-    if msg do
+    if (msg && msg.username == socket.assigns.username) do
       Repo.delete(msg)
     end
 

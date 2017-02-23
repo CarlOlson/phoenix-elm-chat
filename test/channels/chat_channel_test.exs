@@ -2,11 +2,14 @@ defmodule Chat.ChatChannelTest do
   use Chat.ChannelCase
 
   alias Chat.ChatChannel
+  alias Chat.Message
+
+  @sleep_time 100
 
   setup do
     {:ok, _, socket} =
       socket()
-      |> subscribe_and_join(ChatChannel, "chat:lobby", %{"username" => "name"})
+      |> subscribe_and_join(ChatChannel, "chat:lobby", %{"username" => "carl"})
 
     {:ok, socket: socket}
   end
@@ -34,5 +37,30 @@ defmodule Chat.ChatChannelTest do
     assert_broadcast "shout", %{"body" => "1", "uuid" => uuid1}
     assert_broadcast "shout", %{"body" => "2", "uuid" => uuid2}
     assert uuid1 != uuid2
+  end
+
+  test "should be able to delete own comments", %{socket: socket} do
+    {:ok, message} =
+      %Message{}
+      |> Message.changeset(%{username: "carl", body: "hello"})
+      |> Repo.insert()
+
+    push socket, "delete", %{uuid: message.id}
+
+    assert wait_for(fn ->
+      Repo.get(Message, message.id) == nil
+    end)
+  end
+
+  test "should not be able to delete other's comments", %{socket: socket} do
+    {:ok, message} =
+      %Message{}
+      |> Message.changeset(%{username: "bob", body: "hello"})
+      |> Repo.insert()
+
+    push socket, "delete", %{uuid: message.id}
+
+    :timer.sleep @sleep_time
+    assert Repo.get(Message, message.id)
   end
 end

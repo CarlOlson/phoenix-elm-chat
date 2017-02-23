@@ -33,7 +33,6 @@ view model =
         , tabs = ([], [])
         , main = [mainView model]
         }
-        |> (Material.Scheme.topWithScheme Color.Teal Color.Red)
 
 mainView model =
         (case model.state of

@@ -77,4 +77,24 @@ defmodule Chat.ChatChannelTest do
 
     assert_push "connect", %{"username" => "carl"}
   end
+
+  test "should remove disconnected users from connected list", %{socket: socket} do
+    assert_push "connect", %{}
+    assert_push "connect", %{}
+
+    Process.unlink(socket.channel_pid)
+    close(socket)
+
+    {:ok, _, _} =
+      socket()
+      |> subscribe_and_join(ChatChannel, "chat:lobby", %{"username" => "bob"})
+
+    refute_push "connect", %{"username" => "carl"}
+  end
+
+  test "should broadcast disconnects", %{socket: socket} do
+    Process.unlink(socket.channel_pid)
+    close(socket)
+    assert_broadcast "disconnect", %{"username" => "carl"}
+  end
 end

@@ -48,6 +48,15 @@ defmodule Chat.ChatChannel do
     {:noreply, socket}
   end
 
+  def terminate(_, socket) do
+    ensure_directory_started()
+    user_disconnected(socket.assigns.username)
+
+    broadcast socket, "disconnect", %{"username" => socket.assigns.username}
+
+    {:shutdown, :closed}
+  end
+
   defp send_all_messages(socket) do
     Repo.all(Message)
     |> Enum.each(fn message ->

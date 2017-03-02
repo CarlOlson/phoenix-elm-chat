@@ -2,6 +2,7 @@ port module Update exposing (Msg(..), Form(..), update, subscriptions)
 
 import Model exposing (..)
 import Forms exposing (..)
+import Helpers exposing (uniq)
 
 import Animation exposing (percent, px)
 import Dom.Scroll exposing (..)
@@ -23,6 +24,8 @@ type Msg
     | Submit Form
     | Receive ChatMessage
     | DeleteMessage String
+    | Connected String
+    | Disconnected String
 
 port connect : String -> Cmd msg
 port shout : String -> Cmd msg
@@ -57,6 +60,14 @@ update msg model =
             { model
                 | messages = List.filter (\m -> messageUUID m /= uuid) model.messages
             }! []
+        Connected username ->
+            { model
+                | connected = uniq <| username :: model.connected
+            } ! []
+        Disconnected username ->
+            { model
+                | connected = List.filter ((/=) username) model.connected
+            } ! []
 
 messageUUID : (ChatMessage, Animation.State) -> String
 messageUUID message =

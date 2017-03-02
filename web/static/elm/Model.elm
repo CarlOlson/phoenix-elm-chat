@@ -26,10 +26,11 @@ type alias Model =
     , store : Dict String String
     , state : State
     , messages : List (ChatMessage, Animation.State)
+    , connected : List String
     }
 
 init =
-    Model Material.model Dict.empty Login []
+    Model Material.model Dict.empty Login [] []
 
 keyString : Key -> String
 keyString key =

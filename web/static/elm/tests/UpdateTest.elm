@@ -59,4 +59,27 @@ updateTest =
                             Expect.equal message (ChatMessage "" "" "ID2")
                         _ ->
                             Expect.fail "Incorrect number of messages"
+        , test "Connected should add user to connected list" <|
+            \() ->
+                let
+                    model = case (update (Connected "carl") init) of
+                                (model, cmd) -> model
+                in
+                    Expect.equal model.connected ["carl"]
+        , test "Connected should not add duplicate usernames" <|
+            \() ->
+                let
+                    first_model = case (update (Connected "carl") init) of
+                                      (model, cmd) -> model
+                    final_model = case (update (Connected "carl") first_model) of
+                                      (model, cmd) -> model
+                in
+                    Expect.equal final_model.connected ["carl"]
+        , test "Disconnected should remove users from connected list" <|
+            \() ->
+                let
+                    model = case (update (Disconnected "carl") {init | connected = ["carl"]}) of
+                                (model, cmd) -> model
+                in
+                    Expect.equal model.connected []
         ]

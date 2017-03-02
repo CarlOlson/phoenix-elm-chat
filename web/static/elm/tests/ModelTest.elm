@@ -20,6 +20,9 @@ modelTest = describe "Model"
               , test "will start with no messages" <|
                   \() ->
                       Expect.equal init.messages []
+              , test "will contain no connected in users" <|
+                  \() ->
+                      Expect.equal init.connected []
               ]
         , describe "withDefault"
             [ test "will return the default" <|

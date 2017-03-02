@@ -63,4 +63,18 @@ defmodule Chat.ChatChannelTest do
     push socket, "delete", %{uuid: message.id}
     assert_broadcast "delete", %{}
   end
+
+  test "should broadcast login event" do
+    assert_broadcast "connect", %{"username" => "carl"}
+  end
+
+  test "should send other logged in users upon login" do
+    assert_push "connect", %{"username" => "carl"}
+
+    {:ok, _, _} =
+      socket()
+      |> subscribe_and_join(ChatChannel, "chat:lobby", %{"username" => "bob"})
+
+    assert_push "connect", %{"username" => "carl"}
+  end
 end

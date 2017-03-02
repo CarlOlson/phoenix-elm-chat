@@ -14,6 +14,11 @@ defmodule Chat.IntegrationTest do
   # Start hound session and destroy when tests are run
   hound_session()
 
+  setup config do
+    Repo.delete_all(Message)
+    {:ok, config}
+  end
+
   test "homepage has a title" do
     navigate_to("/")
 
@@ -32,16 +37,15 @@ defmodule Chat.IntegrationTest do
 
     send_message("hello")
 
+    :timer.sleep(100)
     assert wait_for_text(~r/hello/)
   end
 
   @tag :not_travis
-  test "should display users" do
+  test "should display connected users" do
     login()
 
-    send_message("hello")
-
-    assert wait_for_text(~r/carl/i)
+    assert wait_for_text(~r/Carl/)
   end
 
   @tag :not_travis
@@ -61,8 +65,8 @@ defmodule Chat.IntegrationTest do
     login()
 
     send_message("hello")
-    wait_for_text(~r/hello/)
 
+    wait_for_visible_text(~r/hello/)
     wait_for_element(:class, "delete-me")
     |> click()
 
@@ -73,13 +77,12 @@ defmodule Chat.IntegrationTest do
 
   @tag :not_travis
   test "should remove deleted messages from the database" do
-    login()
-
-    send_message("hello")
-    wait_for_text(~r/hello/)
-
+    add_message("Carl", "hello")
     id = Repo.one from msg in Message, select: msg.id
 
+    login()
+
+    wait_for_visible_text(~r/hello/)
     wait_for_element(:class, "delete-me")
     |> click()
 
@@ -145,9 +148,17 @@ defmodule Chat.IntegrationTest do
     end)
   end
 
-  defp wait_for_text(regex) do
+  defp wait_for_visible_text(regex) do
     wait_for(fn ->
       visible_page_text() =~ regex
+    end)
+  end
+
+  defp wait_for_text(regex) do
+    wait_for(fn ->
+      page_source()
+      |> Floki.parse()
+      |> Floki.text() =~ regex
     end)
   end
 end

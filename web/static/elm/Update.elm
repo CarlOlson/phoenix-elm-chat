@@ -33,6 +33,7 @@ port delete : String -> Cmd msg
 port receive_delete : (String -> msg) -> Sub msg
 port receive_shout : (ChatMessage -> msg) -> Sub msg
 port receive_connected : (String -> msg) -> Sub msg
+port receive_disconnected : (String -> msg) -> Sub msg
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
@@ -96,7 +97,8 @@ subscriptions model =
               <| List.map (\m -> case m of (m, s) -> s) model.messages
         , receive_shout Receive
         , receive_delete DeleteMessage
-        , receive_connected Connected ]
+        , receive_connected Connected
+        , receive_disconnected Disconnected ]
 
 initMessageStyle : Animation.State
 initMessageStyle =

@@ -118,6 +118,25 @@ defmodule Chat.IntegrationTest do
     assert wait_for_text(~r/bob/)
   end
 
+  @tag :not_travis
+  test "should remove users on disconnect" do
+    login()
+
+    socket = subscribe_and_join!(
+      socket(),
+      Chat.ChatChannel,
+      "chat:lobby",
+      %{"username" => "bob"})
+    wait_for_text(~r/bob/)
+
+    Process.unlink(socket.channel_pid)
+    close(socket)
+
+    assert wait_for(fn ->
+      !(page_source() =~ ~r/bob/)
+    end)
+  end
+
   defp send_message(text) do
     wait_for_element(:tag, "input")
     |> input_into_field(text)

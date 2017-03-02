@@ -37,6 +37,8 @@ app.ports.connect.subscribe((username) => {
         app.ports.receive_delete.send(uuid));
     channel.on("connect", ({username}) =>
         app.ports.receive_connected.send(username));
+    channel.on("disconnect", ({username}) =>
+        app.ports.receive_disconnected.send(username));
 });
 
 app.ports.shout.subscribe(body =>

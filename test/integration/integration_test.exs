@@ -45,6 +45,18 @@ defmodule Chat.IntegrationTest do
   end
 
   @tag :not_travis
+  test "should not show logged out users" do
+    add_message("bob", "hello")
+
+    login()
+    wait_for_text(~r/hello/i)
+
+    refute (
+      find_element(:class, "mdl-list")
+      |> inner_text() =~ ~r/bob/)
+  end
+
+  @tag :not_travis
   test "should be able to delete messages" do
     login()
 

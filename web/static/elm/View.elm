@@ -157,4 +157,4 @@ usersView model =
                 ]
     in
         div [] [ Lists.ul []
-                     (List.map userView (uniq <| allUsers model)) ]
+                     (List.map userView model.connected) ]

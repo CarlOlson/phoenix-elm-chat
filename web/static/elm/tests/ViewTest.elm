@@ -14,8 +14,9 @@ import Model exposing (..)
 import Animation
 import Material
 
-mockModel = put Username "carl" { init |
-                                      messages = [ (ChatMessage "carl" "hello" "ID1", Animation.style []) ]
+mockModel = put Username "carl" { init
+                                    | messages = [ (ChatMessage "carl" "hello" "ID1", Animation.style []) ]
+                                    , connected = ["carl", "bob"]
                                 }
 
 viewTest : Test
@@ -25,7 +26,7 @@ viewTest = describe "View"
                      (usersView mockModel
                      |> Query.fromHtml
                      |> Query.find [ tag "ul" ]
-                     |> Query.has [ text "carl" ])
+                     |> Query.has [ text "bob" ])
            , test "login should show the username" <|
                \() ->
                    let
